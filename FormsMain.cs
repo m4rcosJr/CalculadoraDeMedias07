@@ -60,3 +60,104 @@ namespace CalculadoraDeMedias07
             lblFinal.Text = "0,0";
             lblStatus.ForeColor = Color.Black;
         }
+        // ─── Sanitização de entrada ───────────────────────────────────────────
+        private void txtNote_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                int pos = tb.SelectionStart;
+                string sanitized = _textSanitizer.Sanitize(tb.Text);
+                if (tb.Text != sanitized)
+                {
+                    tb.Text = sanitized;
+                    tb.SelectionStart = Math.Max(0, pos - 1);
+                }
+            }
+        }
+ 
+        // ─── Helpers ─────────────────────────────────────────────────────────
+        private bool TryParseNote(string input, string fieldName, out double value)
+        {
+            value = 0.0;
+            string sanitized = _textSanitizer.Sanitize(input).Replace(',', '.');
+ 
+            if (!double.TryParse(sanitized,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out value))
+            {
+                MessageBox.Show($"O campo '{fieldName}' contém um valor inválido.",
+                    "Entrada Inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+ 
+            if (!_calculator.IsNoteValid(value))
+            {
+                MessageBox.Show($"O campo '{fieldName}' deve estar entre 0,0 e 10,0.",
+                    "Valor Fora do Intervalo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+ 
+            return true;
+        }
+ 
+        private void ApplySemestralStatus(StudentStatus status)
+        {
+            switch (status)
+            {
+                case StudentStatus.Aprovado:
+                    lblStatus.Text = "Aprovado";
+                    lblStatus.ForeColor = Color.Green;
+                    SetFinalSectionEnabled(false);
+                    break;
+ 
+                case StudentStatus.EmExame:
+                    lblStatus.Text = "Em Exame";
+                    lblStatus.ForeColor = Color.Orange;
+                    SetFinalSectionEnabled(true);
+                    break;
+            }
+        }
+ 
+        private void ApplyFinalStatus(StudentStatus status)
+        {
+            switch (status)
+            {
+                case StudentStatus.Aprovado:
+                    lblStatus.Text = "Aprovado";
+                    lblStatus.ForeColor = Color.Green;
+                    break;
+ 
+                case StudentStatus.Reprovado:
+                    lblStatus.Text = "Reprovado";
+                    lblStatus.ForeColor = Color.Red;
+                    break;
+            }
+        }
+ 
+        private void SetFinalSectionEnabled(bool enabled)
+        {
+            txtExame.Enabled = enabled;
+            lblFinal.Enabled = enabled;
+            btnLimparFinal.Enabled = enabled;
+            btnFinal.Enabled = enabled;
+        }
+ 
+        private void ResetAll()
+        {
+            txtNP1.Text = string.Empty;
+            txtNP2.Text = string.Empty;
+            txtPIM.Text = string.Empty;
+            txtExame.Text = string.Empty;
+ 
+            lblSemestral.Text = "0,0";
+            lblFinal.Text = "0,0";
+ 
+            lblStatus.Text = "Em Andamento";
+            lblStatus.ForeColor = Color.Black;
+ 
+            _semestralAverage = 0.0;
+            SetFinalSectionEnabled(false);
+        }
+    }
+}
