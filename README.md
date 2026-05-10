@@ -1,102 +1,197 @@
-# ESWA04CalculadoraDeMedias
+# CalculadoraDeMedias04
 
-> Biblioteca de Classes — Engenharia de Software Ágil Aplicada | Atividade II | Equipe 04
+> Aplicativo Desktop — Engenharia de Software Ágil Aplicada | Atividade II | Equipe 04
 
 ---
 
 ## 📋 Sobre o Projeto
 
-Biblioteca desenvolvida em **C#** contendo as regras de negócio para o cálculo de médias semestral e final de alunos de instituições de ensino superior (IES) e médio.
+Aplicativo **Desktop Windows** desenvolvido em **C# / WinForms** para cálculo de médias semestrais e finais de alunos de instituições de ensino superior (IES) e médio/técnico (IEMT).
 
-Este projeto faz parte da **Atividade II** das disciplinas de ESWA e POO-C# ministradas pelo Prof. Marcos M. Chaves.
+O sistema realiza:
+- cálculo automático de médias;
+- validação de entradas numéricas;
+- arredondamento padronizado;
+- definição automática do status do aluno.
+
+Projeto desenvolvido para a disciplina de **Engenharia de Software Ágil Aplicada (ESWA)** em conjunto com **POO-C#**, ministradas pelo Prof. Marcos M. Chaves.
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## 🖥️ Interface do Sistema
 
-```
-ESWA04CalculadoraDeMedias/
-├── OOPFoundation/
-│   ├── IDoubleValidation.cs       # Interface de validação numérica
-│   ├── ADoubleValidation.cs       # Classe abstrata com limites
-│   ├── NoteValidation.cs          # Valida notas [0,0 ; 10,0]
-│   ├── WeightValidation.cs        # Valida pesos [0,0 ; 1,0]
-│   ├── ISanitization.cs           # Interface de sanitização
-│   ├── ITextValidation.cs         # Interface de validação textual
-│   ├── SanitizationPattern.cs     # Padrões de caracteres permitidos
-│   ├── AText.cs                   # Classe abstrata de texto
-│   └── Text.cs                    # Sanitização de campos de nota
-├── GradeCalculator.cs             # Lógica de cálculo de médias
-├── StudentStatus.cs               # Enum de status do aluno
-└── GradeCalculatorTests/
-    └── GradeCalculatorTests.cs    # Testes unitários (xUnit)
-```
+O aplicativo possui uma interface simples e intuitiva dividida em duas etapas principais.
+
+### 📌 Status do Aluno
+
+Exibe automaticamente o resultado acadêmico do aluno:
+
+- 🟡 Em Andamento
+- 🟢 Aprovado
+- 🟠 Em Exame
+- 🔴 Reprovado
+
+---
+
+### 📚 Seção Semestral
+
+Campos disponíveis:
+- NP1
+- NP2
+- PIM
+
+Resultado:
+- Média Semestral (MS)
+
+Ações:
+- Limpar
+- Calcular Semestral
+
+---
+
+### 📝 Seção Final
+
+Disponível apenas quando o aluno estiver em exame.
+
+Campos disponíveis:
+- Exame
+
+Resultado:
+- Média Final (MF)
+
+Ações:
+- Limpar
+- Calcular Final
 
 ---
 
 ## 📐 Regras de Negócio
 
 ### Média Semestral (MS)
-```
+
+```math
 MS = (4 × NP1 + 4 × NP2 + 2 × PIM) / 10
 ```
-- MS ≥ 7,0 → **Aprovado**
-- MS < 7,0 → **Em Exame**
+
+### Critérios
+
+- MS ≥ 7,0 → Aprovado
+- MS < 7,0 → Em Exame
+
+---
 
 ### Média Final (MF)
-```
+
+```math
 MF = (MS + Exame) / 2
 ```
-- MF ≥ 5,0 → **Aprovado**
-- MF < 5,0 → **Reprovado**
 
-### Arredondamento
+### Critérios
+
+- MF ≥ 5,0 → Aprovado
+- MF < 5,0 → Reprovado
+
+---
+
+## 🔄 Arredondamento
+
+O sistema utiliza arredondamento padronizado:
+
 ```csharp
 Math.Round(media, 1, MidpointRounding.AwayFromZero)
 ```
 
 ---
 
-## ✅ Testes Unitários
+## ⚙️ Como Executar
 
-Framework: **xUnit**
+### ✅ Pré-requisitos
 
-| Teste | Status |
-|---|---|
-| TestingNoteValidation_IsValid_ReturnsTrue | ✔ Aprovado |
-| TestingNoteValidation_IsInvalid_ReturnsFalse | ✔ Aprovado |
-| TestingWeightValidation_IsValid_ReturnsTrue | ✔ Aprovado |
-| TestingWeightValidation_IsInvalid_ReturnsFalse | ✔ Aprovado |
-| TestingWeightSumValidation_SumEqualsOne_ReturnsTrue | ✔ Aprovado |
-| TestingWeightSumValidation_SumNotOne_ReturnsFalse | ✔ Aprovado |
-| TestingGradeCalculator_CalculateSemestralAverage_CorrectResult | ✔ Aprovado |
-| TestingGradeCalculator_CalculateSemestralAverage_Rounding | ✔ Aprovado |
-| TestingGradeCalculator_CalculateSemestralAverage_InvalidNoteThrows | ✔ Aprovado |
-| TestingGradeCalculator_GetSemestralStatus_Approved | ✔ Aprovado |
-| TestingGradeCalculator_GetSemestralStatus_InExam | ✔ Aprovado |
-| TestingGradeCalculator_CalculateFinalAverage_CorrectResult | ✔ Aprovado |
-| TestingGradeCalculator_GetFinalStatus_Approved | ✔ Aprovado |
-| TestingGradeCalculator_GetFinalStatus_Reprovado | ✔ Aprovado |
-| TestingText_Sanitize_RemovesInvalidChars | ✔ Aprovado |
+- Windows 10 ou superior
+- .NET 10 Runtime
+- Visual Studio 2022 (opcional)
 
 ---
 
-## 📦 NuGet
+### ▶️ Executando pelo Visual Studio
 
-A biblioteca está disponível como pacote NuGet:
+1. Clone este repositório
 
+```bash
+git clone https://github.com/m4rcosJr/ESWA04CalculadoraDeMedias.git
 ```
+
+2. Abra o arquivo:
+
+```txt
+CalculadoraDeMedias04.slnx
+```
+
+3. Defina o projeto principal como inicialização
+
+4. Execute pressionando:
+
+```txt
+F5
+```
+
+---
+
+### 📦 Executando pelo executável
+
+1. Acesse a pasta:
+
+```txt
+bin/Release
+```
+
+2. Execute:
+
+```txt
+CalculadoraDeMedias04.exe
+```
+
+---
+
+## 🔗 Biblioteca Utilizada
+
+Este projeto utiliza a biblioteca:
+
+### ESWA04CalculadoraDeMedias
+
+Responsável por:
+- cálculos;
+- validações;
+- sanitização;
+- regras de negócio.
+
+Instalação via NuGet:
+
+```bash
 dotnet add package ESWA04CalculadoraDeMedias
 ```
 
 ---
 
-## 🛠️ Tecnologias
+## 🏗️ Estrutura do Projeto
 
-- C# / .NET 10
-- xUnit (testes unitários)
-- Princípios S.O.L.I.D.
-- Paradigma de Orientação a Objetos
+```txt
+CalculadoraDeMedias04/
+├── FormMain.cs
+├── FormMain.Designer.cs
+├── Program.cs
+└── README.md
+```
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- C#
+- .NET 10
+- Windows Forms (WinForms)
+- Programação Orientada a Objetos (POO)
+- Princípios SOLID
 
 ---
 
@@ -104,12 +199,25 @@ dotnet add package ESWA04CalculadoraDeMedias
 
 | Aluno | RA |
 |---|---|
-| Marcos Ferreira dos Saantos Junior | F3616F2|
+| Marcos Ferreira dos Saantos Junior | F3616F2 |
 | Cauã Santos Aguirre | R6826B0 |
-| Eduardo Matheus Barboza de Medeiros| H659558 |
-
+| Eduardo Matheus Barboza de Medeiros | H659558 |
 
 ---
 
-> Disciplinas: Engenharia de Software Ágil Aplicada + POO-C#
-> Prof. Marcos M. Chaves — 2026
+## 📚 Disciplinas
+
+- Engenharia de Software Ágil Aplicada
+- Programação Orientada a Objetos — C#
+
+---
+
+## 👨‍🏫 Docente
+
+**Prof. Marcos M. Chaves**
+
+---
+
+## 📄 Licença
+
+Projeto desenvolvido para fins acadêmicos.
